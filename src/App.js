@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+
+
 
 function App() {
+  const [quote, setQuote] = useState({ text: "", author: "" });
+  const fetchQuote = async () => {
+    try {
+      const response = await fetch("https://dummyjson.com/quotes");
+      const data = await response.json();
+
+      const i = Math.floor(Math.random() * 10);
+
+
+      setQuote({ text: data.quotes[i].quote, author: data.quotes[i].author })
+    } catch (error) {
+      console.error("Error fetching quote:", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchQuote();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="quote-container">
+        <p className="quote-text">"{quote.text}"</p>
+        <p className="quote-author">- {quote.author || "Unknown"}</p>
+        <button onClick={fetchQuote}>New Quote</button>
+      </div>
     </div>
   );
 }
